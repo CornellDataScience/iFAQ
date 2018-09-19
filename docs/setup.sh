@@ -1,4 +1,5 @@
 cd iFAQ
+cp env.template .env
 
 sudo apt install virtualenv
 virtualenv -p python3 venv
