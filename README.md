@@ -1,2 +1,2 @@
-# piccione
-What do you find on a piazza?
+# iFAQ
+An interactive question answering system for your files
