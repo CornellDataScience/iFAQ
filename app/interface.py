@@ -2,14 +2,18 @@ from flask import (
     Blueprint, request, render_template
 )
 
+from werkzeug.utils import secure_filename
+
 bp = Blueprint('interface', __name__)
 
 @bp.route('/app', methods=['GET', 'POST'])
 def app():
-    fileIn = request.form['fileIn'] if 'fileIn' in request.files else None
-    question = request.form['question'] if 'question' in request.files else None
-    if fileIn:
-        print(fileIn)
-    if question:
-        print(question)
+    form = request.form
+    files = request.files 
+    if 'question' in form:
+        print(form['question'])
+    if 'fileIn' in form and files != None:
+        print(form['fileIn'])
+        print(type(files))
+
     return render_template('interface/content.html')
