@@ -1,11 +1,15 @@
-import flask
+from flask import (
+    Blueprint, request, render_template
+)
 
-bp = flask.Blueprint('interface', __name__)
+bp = Blueprint('interface', __name__)
 
-@bp.route('/', methods=['POST'])
-def root():
-    if request.form['fileIn']:
-        print(request.form['fileIn'])
-    if request.form['question']:
-        print(request.form['question'])
-    return flask.render_template('templates/interface/content.html')
+@bp.route('/app', methods=['GET', 'POST'])
+def app():
+    fileIn = request.form['fileIn'] if 'fileIn' in request.files else None
+    question = request.form['question'] if 'question' in request.files else None
+    if fileIn:
+        print(fileIn)
+    if question:
+        print(question)
+    return render_template('interface/content.html')

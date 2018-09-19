@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-	<form method="post">
+	<form method="post" action="{{ url_for('.app') }}">
 		<label>Question:</label>
 		<input type="text" name="question" placeholder="What is a Question?" />
 		<label>Upload Document:</label>
 		<input type="file" name="fileIn" />
-	</form>
+	</form> 
 {% endblock %}
