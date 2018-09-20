@@ -20,7 +20,7 @@ def create_app(test_config=None):
     def test():
         return 'Hello, World'
 
-    from . import interface
-    app.register_blueprint(interface.bp)
+    from . import main
+    app.register_blueprint(main.bp)
 
     return app
