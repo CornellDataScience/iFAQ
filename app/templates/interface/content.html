@@ -6,10 +6,25 @@
 
 {% block content %}
 	<form method="post" action="{{ url_for('.app') }}">
-		<label>Question:</label>
-		<input type="text" name="question" placeholder="What is a Question?" />
-		<label>Upload Document:</label>
-		<input type="file" name="fileIn" />
-		<input type="submit" value="Submit">
-	</form> 
+		<label>
+            Upload Document:
+		    <input type="file" name="fileIn" />
+		    <input type="submit" value="Submit"/>
+        </label>
+	</form>
+
+    <form method="post" action="{{ url_for('.app') }}">
+        <label>
+            Question:
+            <textarea
+                    name="question"
+                    cols="60"
+                    rows="3"
+                    autocomplete="on"
+                    placeholder="What is the meaning of life?"
+                    spellcheck="true">
+            </textarea>
+		    <input type="submit"/>
+        </label>
+	</form>
 {% endblock %}

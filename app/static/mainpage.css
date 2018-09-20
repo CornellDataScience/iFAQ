@@ -1,0 +1,18 @@
+body {
+    background: #eeeeee;
+    font-family: Verdana, serif;
+    margin: 10px;
+}
+
+textarea {
+    font-family: Verdana, serif;
+}
+
+label, input {
+    display: block;
+}
+
+label {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

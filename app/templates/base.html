@@ -2,12 +2,17 @@
 <html>
 
 <head>
-	<title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet"
+          type="text/css"
+          href= "{{ url_for('static', filename='mainpage.css') }}"
+    />
+	<title>{% block title %} iFAQ {% endblock %}</title>
 	<meta charset="utf-8" />
 </head>
 
 <body>
+    {% include 'navbar.html' %}
 	{% block content %}{% endblock %}
 </body>
 
-</html
+</html>
