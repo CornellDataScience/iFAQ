@@ -1,3 +1,6 @@
 [submodule "ml/mnemonic-reader"]
 	path = ml/mnemonic-reader
 	url = https://github.com/yujiakimoto/mnemonic-reader
+[submodule "ml/duplicate_questions"]
+	path = ml/duplicate_questions
+	url = https://github.com/yuzhshen/duplicate_questions.git
