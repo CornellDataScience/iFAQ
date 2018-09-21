@@ -20,7 +20,10 @@ def create_app(test_config=None):
     def test():
         return 'Hello, World'
 
-    from . import main
-    app.register_blueprint(main.bp)
+    from app import home, documents, about, contact
+    app.register_blueprint(home.bp)
+    app.register_blueprint(documents.bp)
+    app.register_blueprint(about.bp)
+    app.register_blueprint(contact.bp)
 
     return app

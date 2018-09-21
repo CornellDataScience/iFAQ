@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block upload %}
+    <form method="post" action="{{ url_for('.app') }}">
+        <label>
+            Upload Document:
+            <input type="file" name="fileIn"/>
+            <input type="submit" value="Submit"/>
+        </label>
+    </form>
+{% endblock %}
