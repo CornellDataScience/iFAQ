@@ -4,3 +4,6 @@
 [submodule "ml/duplicate_questions"]
 	path = ml/duplicate_questions
 	url = https://github.com/yuzhshen/duplicate_questions.git
+[submodule "ml/duplicate-questions"]
+	path = ml/duplicate-questions
+	url = https://github.com/yuzhshen/duplicate-questions
