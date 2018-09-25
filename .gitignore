@@ -1,22 +1,10 @@
-*.swp
+.env
 .idea/
 
-venv/
-.env
-
 *.pyc
-__pycache__/
+*.swp
 
-instance/
-
-.pytest_cache/
-.coverage
-htmlcov/
-
-dist/
-build/
-*.egg-info/
-
-doc_store/
+app/__pycache__/
 app/static/node_modules/
 
+venv/
