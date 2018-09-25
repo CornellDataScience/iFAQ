@@ -18,3 +18,5 @@ build/
 *.egg-info/
 
 doc_store/
+app/static/node_modules/
+
