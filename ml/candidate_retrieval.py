@@ -23,15 +23,12 @@ class CandidateStore:
 
 
     def get_num_candidates(self):
-        pass
+        return self.docs.shape[0]
 
     def get_all_candidates(self):
-        pass
+        return self.docs
 
     def save_store(self):
-        pass
-
-    def get_clusters(self):
         pass
 
     def make_clusters(self):
@@ -40,3 +37,6 @@ class CandidateStore:
 
 if __name__ == '__main__':
     CS = CandidateStore()
+    # CS.add_doc('on_method.txt')
+    # print(CS.get_num_candidates())
+    # print(CS.get_all_candidates())
