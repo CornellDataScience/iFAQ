@@ -1,11 +1,10 @@
-
-
+import pandas as pd
+import numpy as np
 
 
 class CandidateStore:
     def __init__(self):
-        self.docs = []
-        self.clusters = []
+        self.docs = pd.DataFrame(columns=['text','cluster','topic'])
 
 
     def retrieve(self, question):
@@ -17,7 +16,7 @@ class CandidateStore:
         for l in f:
             print(l)
             if l == "\n":
-                self.docs.append(paragraph)
+                self.docs.loc[len(self.docs)] = [paragraph, np.nan, None]
                 paragraph = ""
             else:
                 paragraph += l[:-1]
