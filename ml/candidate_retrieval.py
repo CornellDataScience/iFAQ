@@ -5,6 +5,7 @@
 class CandidateStore:
     def __init__(self):
         self.docs = []
+        self.clusters = []
 
 
     def retrieve(self, question):
@@ -40,5 +41,3 @@ class CandidateStore:
 
 if __name__ == '__main__':
     CS = CandidateStore()
-    CS.add_doc('on_method.txt')
-    print(CS.docs[0],CS.docs[1])
