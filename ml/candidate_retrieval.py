@@ -1,16 +1,26 @@
-import scikit-learn as sk
+
 
 
 
 class CandidateStore:
     def __init__(self):
-        pass
+        self.docs = []
+
 
     def retrieve(self, question):
         pass
 
     def add_doc(self, texttxt):
-        pass
+        f = open(texttxt,'r')
+        paragraph = ""
+        for l in f:
+            print(l)
+            if l == "\n":
+                self.docs.append(paragraph)
+                paragraph = ""
+            else:
+                paragraph += l[:-1]
+
 
     def get_num_candidates(self):
         pass
@@ -26,3 +36,9 @@ class CandidateStore:
 
     def make_clusters(self):
         pass
+
+
+if __name__ == '__main__':
+    CS = CandidateStore()
+    CS.add_doc('on_method.txt')
+    print(CS.docs[0],CS.docs[1])
