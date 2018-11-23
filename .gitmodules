@@ -7,3 +7,6 @@
 [submodule "ml/duplicate-questions"]
 	path = ml/duplicate-questions
 	url = https://github.com/yuzhshen/duplicate-questions
+[submodule "ml/MnemonicReader"]
+	path = ml/MnemonicReader
+	url = https://github.com/HKUST-KnowComp/MnemonicReader.git
