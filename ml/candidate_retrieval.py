@@ -13,7 +13,7 @@ class CandidateStore:
         self.docs = pd.DataFrame(columns=['text','cluster','topic'])
         self.dictionary = None
         self.term_mat = None
-        self.n_clusters = clusters
+        self.n_clusters = n_clusters
 
 
     def retrieve(self, question):
@@ -42,7 +42,7 @@ class CandidateStore:
 
     def make_clusters(self):
         self.dictionary, self.term_mat = make_token_column(self.docs)
-        self.clusters = SpectralClustering(n_clusters,
+        self.clusters = SpectralClustering(self.n_clusters,
                 assign_labels="discretize").fit(self.term_mat)
         self.docs["cluster"] = self.clusters.labels_
 
@@ -53,23 +53,23 @@ def make_token_column(df, remove_stopwords=True):
     trans = str.maketrans("", "", string.punctuation)
     pattern = r"http\S+|"
     df["edit"] = df["text"].str.replace(pattern, "").str.lower().str.translate(trans)
-    
+
     if remove_stopwords:
         df["tokenized"] = df["edit"].apply(tokenize_wo_stops)
     else:
         df["tokenized"] = df["edit"].apply(word_tokenize)
-    
+
     dct = Dictionary(df["tokenized"])
-    
+
     df["bow"] = df["tokenized"].apply(dct.doc2bow)
-    
+
     dct_term = corpus2csc(df["bow"]).todense().T
-    
+
     return dct, dct_term
 
 if __name__ == '__main__':
-    CS = CandidateStore()
-    # CS.add_doc('on_method.txt')
-    # print(CS.get_num_candidates())
-    # print(CS.get_all_candidates())
-
+    CS = CandidateStore(10)
+    CS.add_doc('on_method.txt')
+    CS.make_clusters()
+    print(CS.get_num_candidates())
+    print(CS.get_all_candidates())
