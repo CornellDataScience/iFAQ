@@ -41,11 +41,13 @@
 
 <body>
 
-{% block upload %}{% endblock %}
-{% block question %}{% endblock %}
-{% block answer %}{% endblock %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../static/dist/bundle.js" type="text/javascript"></script>
 
-<script src="../static/dist/bundle.js" type="text/javascript"></script>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>{% block upload %}{% endblock %} {% block question %}{% endblock %} {% block answer %}{% endblock %}
+
 
 </body>
 

@@ -1,10 +1,12 @@
 .env
 .idea/
+.vscode/
 
 *.pyc
 *.swp
 
 app/__pycache__/
 app/static/node_modules/
+app/m_reader.mdl
 
 venv/

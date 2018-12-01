@@ -1,4 +1,4 @@
-import scikit-learn as sk
+import sklearn as sk
 
 
 

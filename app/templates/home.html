@@ -1,21 +1,13 @@
 {% extends 'base.html' %}
 
 {% block question %}
-    <form method="post" action="{{ url_for('.app') }}">
+    <form action="/predict" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <label for="question">Question</label>
-            <textarea class="form-control" id="question" rows="3" cols="60"
-                      placeholder="What is the meaning of life?"></textarea>
-            <input type="submit"/>
+            <input type="text" name="question"><br>
+            <input type="submit" value="Submit"> {% if label %} {{ label }} {% endif %}
         </div>
     </form>
 {% endblock %}
 
 {% block answer %}
-    <form method="get" action="{{ url_for('.app') }}">
-        <div class="form-group">
-            <label for="answer">Answer</label>
-            <textarea class="form-control" id="question" rows="3" cols="60" readonly></textarea>
-        </div>
-    </form>
 {% endblock %}
