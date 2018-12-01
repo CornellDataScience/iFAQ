@@ -43,7 +43,7 @@ class CandidateStore:
     def make_clusters(self):
         self.dictionary, self.term_mat = make_token_column(self.docs)
         self.clusters = SpectralClustering(n_clusters,
-                assign_labels="descretize").fit(self.term_mat)
+                assign_labels="discretize").fit(self.term_mat)
         self.docs["cluster"] = self.clusters.labels_
 
 def tokenize_wo_stops(doc):
