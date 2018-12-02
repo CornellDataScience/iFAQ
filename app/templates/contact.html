@@ -1,1 +1,60 @@
 {% extends 'base.html' %}
+
+{% block question %}
+<style>
+* {
+    box-sizing: border-box;
+}
+
+/* Create four equal columns that floats next to each other */
+.column {
+    float: left;
+    text-align: center;
+    width: 25%;
+    padding: 20px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+img {
+    border-radius: 50%;
+}
+</style>
+
+<div class="row">
+  </div>
+  <div class="column" style="background-color:#ffffff;">
+    <a href="https://www.linkedin.com/in/yuji-akimoto/">
+    <img src="../static/images/yuji.png" width=70%>
+    </a>
+    <h4><br>Yuji Akimoto</h4>
+    <p>Some text..</p>
+  </div>
+  <div class="column" style="background-color:#ffffff;">
+    <a href="https://www.linkedin.com/in/shengyuan-%E2%80%8B-hu-6803a0126/">
+    <img src="../static/images/sean.jpeg" width=70%>
+    </a>
+    <h4><br>Sean Hu</h4>
+    <p>Some text..</p>
+  </div>
+  <div class="column" style="background-color:#ffffff;">
+    <a href="https://www.linkedin.com/in/cameron-ibrahim/">
+    <img src="../static/images/cameron.jpeg" width=70%>
+    </a>
+    <h4><br>Cameron Ibrahim</h4>
+    <p>Some text..</p>
+  </div>
+  <div class="column" style="background-color:#ffffff;">
+    <a href="https://www.linkedin.com/in/yuzhaoshen/">
+    <img src="../static/images/zhao.jpeg" width=70%>
+    </a>
+    <h4><br>Zhao Shen</h4>
+    <p>Some text..</p>
+  </div>
+</div>
+{% endblock %}
