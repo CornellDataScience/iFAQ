@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 
+from candidate_retrieval import CandidateStore
 from predictor import Predictor
 from multiprocessing import cpu_count
 
@@ -13,20 +14,31 @@ def home():
 
 
 @app.route('/predict', methods=['POST'])
-def make_prediction():
+def predict():
     if request.method == 'POST':
         question = request.form['question']
         if len(question) == 0:
             answer = ''
         else:
-            predictions = model.predict('Sean is a legend', question, None, 1)
-            answer = predictions[0][0]
+            candidate_paragraphs = cs.retrieve(question)
+            candidate_answers = []
+            for context in candidate_paragraphs.values:
+                prediction = model.predict(context, question, None, 1)
+                candidate_answers.append(prediction[0])
+
+            candidate_answers.sort(key=lambda x: x[1], reverse=True)
+            answer = candidate_answers[0][0]
 
         return render_template('home.html', answer=answer)
 
 
 @app.route('/documents')
 def documents():
+    return render_template('documents.html')
+
+
+@app.route('/upload')
+def upload():
     return render_template('documents.html')
 
 
@@ -43,11 +55,17 @@ def contact():
 if __name__ == '__main__':
     # load ml model
     model = Predictor(
-        'app/m_reader.mdl',
+        'app/static/m_reader.mdl',
         normalize=True,
         embedding_file=None,
         char_embedding_file=None,
         num_workers=cpu_count() // 2
     )
+
+    # initialize DB
+    cs = CandidateStore(10)
+    cs.add_doc('app/static/on_method.txt')
+    cs.make_clusters()
+
     # start api
     app.run(host='0.0.0.0', port=8000, debug=True)

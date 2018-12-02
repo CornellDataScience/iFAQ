@@ -7,6 +7,6 @@
 
 app/__pycache__/
 app/static/node_modules/
-app/m_reader.mdl
+app/static/m_reader.mdl
 
 venv/

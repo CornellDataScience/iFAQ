@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd ../
 cp env.template .env
 
