@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, flash, request, render_template
 
 from candidate_retrieval import CandidateStore
 from predictor import Predictor
@@ -37,8 +37,25 @@ def documents():
     return render_template('documents.html')
 
 
-@app.route('/upload')
+@app.route('/upload', methods=['GET', 'POST'])
 def upload():
+    if request.method == 'POST':
+        print(request)
+        if 'file' not in request.files:
+            return render_template('documents.html')
+
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file.')
+            return render_template('documents.html')
+
+        if not file.filename.endswith('txt'):
+            flash('Invalid file format')
+            return render_template('documents.html')
+
+        # Add file to candidate store
+        cs.add_doc(file.filename)
+
     return render_template('documents.html')
 
 
