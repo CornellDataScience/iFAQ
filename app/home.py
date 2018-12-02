@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 @app.route('/home')
-def index():
+def home():
     return render_template('home.html')
 
 
@@ -16,10 +16,28 @@ def index():
 def make_prediction():
     if request.method == 'POST':
         question = request.form['question']
-        predictions = model.predict('Sean is a legend', question, None, 1)
-        answer = predictions[0]
+        if len(question) == 0:
+            answer = ''
+        else:
+            predictions = model.predict('Sean is a legend', question, None, 1)
+            answer = predictions[0][0]
 
-        return render_template('home.html', label=answer)
+        return render_template('home.html', answer=answer)
+
+
+@app.route('/documents')
+def documents():
+    return render_template('documents.html')
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 
 if __name__ == '__main__':

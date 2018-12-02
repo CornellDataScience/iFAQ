@@ -2,3 +2,7 @@ autoenv==1.0.0
 flask==1.0.2
 python-dotenv==0.9.1
 requests==2.20
+pandas
+scikit-learn
+nltk
+gensim

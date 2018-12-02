@@ -3,11 +3,20 @@
 {% block question %}
     <form action="/predict" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <input type="text" name="question"><br>
-            <input type="submit" value="Submit"> {% if label %} {{ label }} {% endif %}
+            <label for="question">Question</label>
+            <textarea class="form-control" name="question" rows="3" cols="60"
+                      placeholder="What is the meaning of life?"></textarea><br>
+            <input type="submit" value="Submit">
         </div>
     </form>
 {% endblock %}
 
 {% block answer %}
+        <form method="get">
+        <div class="form-group">
+            <label for="answer">Answer</label>
+            <textarea class="form-control" id="question" rows="3" cols="60" readonly
+                      placeholder="{{ answer }}"></textarea>
+        </div>
+    </form>
 {% endblock %}
