@@ -30,9 +30,9 @@ class CandidateStore:
         else:
             q['tokenized'] = q['edit'].apply(word_tokenize)
         q['bow'] = q['tokenized'].apply(self.dictionary.doc2bow)
-        dct_term = corpus2csc(q['bow'], num_terms=self.term_mat.shape[1]).todense().T
-        distance = np.linalg.norm(self.term_mat - dct_term,axis=1)
-        cluster_num = self.docs['cluster'][np.argmin(distance)]
+        dct_term = corpus2csc(q['bow'], num_terms=self.term_mat.shape[1]).todense()
+        distance = np.matmul(self.term_mat.A,dct_term.A).flatten()
+        cluster_num = self.docs['cluster'][np.argmax(distance)]
         return self.docs.loc[self.docs['cluster'] == cluster_num]['text']
 
     def add_doc(self, texttxt):
