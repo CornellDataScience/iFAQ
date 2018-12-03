@@ -34,7 +34,7 @@ def predict():
 
 @app.route('/documents')
 def documents():
-    return render_template('documents.html')
+    return render_template('documents.html', files=cs.file_info)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -42,21 +42,21 @@ def upload():
     if request.method == 'POST':
         print(request)
         if 'file' not in request.files:
-            return render_template('documents.html')
+            return render_template('documents.html', files=cs.file_info)
 
         file = request.files['file']
         if file.filename == '':
             flash('No selected file.')
-            return render_template('documents.html')
+            return render_template('documents.html', files=cs.file_info)
 
         if not file.filename.endswith('txt'):
             flash('Invalid file format')
-            return render_template('documents.html')
+            return render_template('documents.html', files=cs.file_info)
 
         # Add file to candidate store
         cs.add_doc(file.filename)
 
-    return render_template('documents.html')
+    return render_template('documents.html', files=cs.file_info)
 
 
 @app.route('/about')
