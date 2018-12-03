@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<head>
+	<title>Table V05</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/css/main.css">
+<!--===============================================================================================-->
+</head>
+    <br>
     <form action="/predict" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="question">Question</label>
             <textarea class="form-control" name="question" rows="3" cols="60"
-                      placeholder="What is the meaning of life?"></textarea><br>
-            <input type="submit" value="Submit">
+                      placeholder="{{ question }}"></textarea><br>
+            <input type="submit" value="Submit" class="button-consistency">
+
         </div>
     </form>
 
@@ -14,7 +26,7 @@
         <div class="form-group">
             <label for="answer">Answer</label>
             <textarea class="form-control" id="question" rows="3" cols="60" readonly
-                      placeholder="{{ answer }}"></textarea>
+                        placeholder="{{ answer }}"></textarea>
         </div>
     </form>
 {% endblock %}

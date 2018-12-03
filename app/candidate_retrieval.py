@@ -1,6 +1,9 @@
+import datetime
 import pandas as pd
 import numpy as np
 import string
+import os
+
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from gensim.corpora import Dictionary
@@ -10,14 +13,15 @@ from sklearn.cluster import SpectralClustering
 
 class CandidateStore:
     def __init__(self, n_clusters):
-        self.docs = pd.DataFrame(columns=['text', 'cluster', 'topic'])
+        self.docs = pd.DataFrame(columns=['text', 'cluster', 'topic', 'edit', 'tokenized', 'bow'])
         self.dictionary = None
         self.term_mat = None
         self.n_clusters = n_clusters
+        self.file_info = []
 
-    def retrieve(self, question,remove_stopwords=True):
-        q = pd.DataFrame(columns=['text','cluster','topic'])
-        q.loc[len(q)] = [question,np.nan,None]
+    def retrieve(self, question, remove_stopwords=True):
+        q = pd.DataFrame(columns=['text', 'cluster', 'topic', 'edit', 'tokenized', 'bow'])
+        q.loc[len(q)] = [question, np.nan, None, None, None, None]
         trans = str.maketrans("", "", string.punctuation)
         pattern = r"http\S+|"
         q['edit'] = q['text'].str.replace(pattern, "").str.lower().str.translate(trans)
@@ -26,20 +30,30 @@ class CandidateStore:
         else:
             q['tokenized'] = q['edit'].apply(word_tokenize)
         q['bow'] = q['tokenized'].apply(self.dictionary.doc2bow)
-        dct_term = corpus2csc(q['bow'],num_terms=self.term_mat.shape[1]).todense().T
+        dct_term = corpus2csc(q['bow'], num_terms=self.term_mat.shape[1]).todense().T
         distance = np.linalg.norm(self.term_mat - dct_term,axis=1)
         cluster_num = self.docs['cluster'][np.argmin(distance)]
         return self.docs.loc[self.docs['cluster'] == cluster_num]['text']
 
     def add_doc(self, texttxt):
+        texttxt = os.path.join('app/static/docs/', texttxt)
+        self.file_info.append({
+            'name': texttxt.split('/')[-1],
+            'size': '{}kB'.format(os.path.getsize(texttxt) >> 10),
+            'date': datetime.date.today().strftime('%B %d, %Y')
+        })
         f = open(texttxt, 'r')
         paragraph = ""
         for l in f:
             if l == "\n":
-                self.docs.loc[len(self.docs)] = [paragraph, np.nan, None]
+                self.docs = self.docs.append(
+                    pd.DataFrame([[paragraph, np.nan, None, None, None, None]],
+                                 columns=self.docs.columns),
+                    ignore_index=True)
                 paragraph = ""
             else:
                 paragraph += l[:-1] + " "
+        self.make_clusters()
 
     def get_num_candidates(self):
         return self.docs.shape[0]

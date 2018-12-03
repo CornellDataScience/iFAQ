@@ -4,9 +4,102 @@
     <form action="/upload" method="post" enctype=multipart/form-data>
         <br>
         <label>
-            Upload Document:
+			Upload Document:
+			<br><br>
             <input type="file" name="file"/>
-            <input type="submit" value="Upload"/>
+            <input type="submit" value="Upload" class="button-consistency"/>
         </label>
     </form>
+
+    <br>
+    <label> Current Documents: </label>
+
+<head>
+	<title>Table V05</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver1">
+					<div class="table100-firstcol">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1">File Name</th>
+								</tr>
+							</thead>
+							<tbody>
+                                {% for file in files %}
+                                    <tr class="row100 body">
+                                        <td class="cell100 column1">{{ file['name'] }}</td>
+                                    </tr>
+                                {% endfor %}
+							</tbody>
+						</table>
+					</div>
+
+					<div class="wrap-table100-nextcols js-pscroll">
+						<div class="table100-nextcols">
+							<table>
+								<thead>
+									<tr class="row100 head">
+										<th class="cell100 column2">File Size</th>
+										<th class="cell100 column3">Date Uploaded</th>
+									</tr>
+								</thead>
+								<tbody>
+                                    {% for file in files %}
+                                        <tr class="row100 body">
+                                            <td class="cell100 column2">{{ file['size'] }}</td>
+                                            <td class="cell100 column3">{{ file['date'] }}</td>
+                                        </tr>
+                                    {% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!--===============================================================================================-->
+	<script src="../static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../static/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+
+			$(this).on('ps-x-reach-start', function(){
+				$(this).parent().find('.table100-firstcol').removeClass('shadow-table100-firstcol');
+			});
+
+			$(this).on('ps-scroll-x', function(){
+				$(this).parent().find('.table100-firstcol').addClass('shadow-table100-firstcol');
+			});
+
+		});
+
+
+
+	</script>
+<!--===============================================================================================-->
+	<script src="../static/js/table.js"></script>
+
+</body>
 {% endblock %}

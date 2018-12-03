@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<head>
+	<title>Table V05</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../static/css/main.css">
+<!--===============================================================================================-->
+</head>
 
+<<<<<<< HEAD
 <style>
 .center {
     display: block;
@@ -33,12 +44,42 @@
     This is then self attended to capture long term dependenciesamong context words. </p>
     <img src="../static/images/attention_mech.png" width=30% class='center' >
 
-    <h4> Duplicate Question Caching </h4>
+=======
+    <h4><br> Candidate Retrieval </h4>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+        est laborum.</p>
+    <br>
+    <h4> Extractive Question Answering </h4>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
     magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
     consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
     pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
     est laborum.</p>
+    <br>
+>>>>>>> c8832c4b89f1ac19c5b1c3791976fdb46f3f8590
+    <h4> Duplicate Question Caching </h4>
+    <br>
+    <p> The duplicate question caching system is intended to speed up the answering process for questions that 
+        have already been answered. The site caches recent questions so that when a question is asked again, if it
+        is a duplicate of a question that has already been asked, we fetch the answer from the cache and do not 
+        need to query the neural network again.
+        <br>
+        <img src="static/images/gru_diagram.png" alt="GRU diagram" style="float: left; width:250px; margin: 10px 40px 10px 10px">
+        <br>
+        Traditionally duplicate question detection is done via a Siamese neural network, which uses two identical 
+        neural networks with shared weights to compute the similarity and decide whether it has the potential to 
+        be a duplicate. Though this approach has decent accuracy, it requires a neural network to encapsulate an 
+        entire natural language question as a single finite-dimensional embedding, which is a daunting task.
+        <br>
+        <img src="static/images/constrained_diagram.png" alt="Constraints diagram" style="float: right; width:150px; margin: 10px 40px 10px 10px">
+        <br>
+        In an effort to develop a better way to go about detecting duplicate questions, I was inspired by the attention mechanism.
+        <br><br><br><br><br><br><br><br><br><br>
+
+    </p>
 
     <h4> Reference </h4>
     <p>
