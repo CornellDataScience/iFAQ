@@ -4,6 +4,8 @@ from candidate_retrieval import CandidateStore
 from predictor import Predictor
 from multiprocessing import cpu_count
 
+from collections import OrderedDict
+
 app = Flask(__name__)
 
 
@@ -19,6 +21,8 @@ def predict():
         question = request.form['question']
         if len(question) == 0:
             answer = ''
+        elif question in cache:
+            answer = cache[question]
         else:
             candidate_paragraphs = cs.retrieve(question)
             candidate_answers = []
@@ -28,6 +32,9 @@ def predict():
 
             candidate_answers.sort(key=lambda x: x[1], reverse=True)
             answer = candidate_answers[0][0]
+            if len(cache) >= cache_capacity:
+                cache.popitem(last=False)
+            cache[question] = answer
 
         return render_template('home.html', answer=answer)
 
@@ -83,6 +90,10 @@ if __name__ == '__main__':
     cs = CandidateStore(10)
     cs.add_doc('app/static/on_method.txt')
     cs.make_clusters()
+
+    # initialize cache
+    cache = OrderedDict()
+    cache_capacity = 10
 
     # start api
     app.run(host='0.0.0.0', port=8000, debug=True)
