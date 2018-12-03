@@ -5,6 +5,10 @@ import scipy.optimize
 import numpy as np
 import lstm_utils as u
 import lstm_constants as c
+import re
+from nltk.stem.wordnet import WordNetLemmatizer
+# also run nltk.download('wordnet')
+# How can I find God? -> How do I find God?
 
 
 from candidate_retrieval import CandidateStore
@@ -18,21 +22,44 @@ class LstmNet(nn.Module):
     def __init__(self):
         super(LstmNet, self).__init__()
         self.lstm = nn.LSTM(input_size = c.SENT_INCLUSION_MAX,
-                            hidden_size = 100,
+                            hidden_size = 200,
                             num_layers = 2)
-        self.fc1 = nn.Linear(100,50)
-        self.bn1 = nn.BatchNorm1d(50)
-        self.fc2 = nn.Linear(50,25)
-        self.bn2 = nn.BatchNorm1d(25)
-        self.fc3 = nn.Linear(25,2)
+        self.fc1 = nn.Linear(200,100)
+        self.bn1 = nn.BatchNorm1d(100)
+        self.fc2 = nn.Linear(100,50)
+        self.bn2 = nn.BatchNorm1d(50)
+        self.fc3 = nn.Linear(50,2)
     
     def forward(self, x):
-        x, (_,_) = self.lstm(x)
+        x, _ = self.lstm(x)
         x = x[-1]
         x = nn.LeakyReLU()(self.bn1(self.fc1(x)))
         x = nn.LeakyReLU()(self.bn2(self.fc2(x)))
         x = nn.Softmax(dim=1)(self.fc3(x))
         return x
+
+def lemmatizer(word):
+    """Returns: lemmatized word if word >= length 5
+    """
+    if len(word)<4:
+        return word
+    return wnl.lemmatize(wnl.lemmatize(word, "n"), "v")
+
+def clean_string(string): # From kaggle-quora-dup submission
+    """Returns: cleaned string, with common token replacements and lemmatization
+    """
+    string = string.lower().replace(",000,000", "m").replace(",000", "k").replace("′", "'").replace("’", "'") \
+        .replace("won't", "will not").replace("cannot", "can not").replace("can't", "can not") \
+        .replace("n't", " not").replace("what's", "what is").replace("it's", "it is") \
+        .replace("'ve", " have").replace("i'm", "i am").replace("'re", " are") \
+        .replace("he's", "he is").replace("she's", "she is").replace("'s", " own") \
+        .replace("%", " percent ").replace("₹", " rupee ").replace("$", " dollar ") \
+        .replace("€", " euro ").replace("'ll", " will").replace("=", " equal ").replace("+", " plus ")
+    string = re.sub('[“”\(\'…\)\!\^\"\.;:,\-\?？\{\}\[\]\\/\*@]', ' ', string)
+    string = re.sub(r"([0-9]+)000000", r"\1m", string)
+    string = re.sub(r"([0-9]+)000", r"\1k", string)
+    string = ' '.join([lemmatizer(w) for w in string.split()])
+    return string
 
 def get_matrix(str1, str2):
     goal_str = str1; use_str = str2
@@ -59,14 +86,17 @@ def get_matrix(str1, str2):
             matrix[g_idx] = np.nan_to_num(res.x)
     return matrix
 
-
 def duplicate_in_cache(question):
     for key in cache:
-        print('Solving equations...')
-        matrix = np.expand_dims(get_matrix(question, key), 0)
-        matrix = torch.tensor(matrix)
+        q1, q2 = clean_string(question), clean_string(key) 
+        print('Comparing:\t{}\t{}'.format(q1,q2))
+        matrix = np.expand_dims(get_matrix(q1, q2), 0)
+        matrix = np.swapaxes(matrix, 0, 1)
+        matrix = torch.tensor(matrix, dtype=torch.float32)
         pred = int(lstm_model(matrix).max(1)[1])
+        print('Prediction:{}'.format(pred))
         if pred==1:
+            print('pred is 1!')
             return True, cache[key]
     return False, None
 
@@ -157,10 +187,13 @@ if __name__ == '__main__':
     )
 
     print('Loading LSTM...')
-    lstm_model = torch.load('app/static/net.pt',map_location=torch.device('cpu'))
+    lstm_model = torch.load('app/static/better_net.pt',map_location=torch.device('cpu'))
+    lstm_model.eval()
 
     print('Loading GloVe...')
     word2vect = pickle.load(open(c.GLOVE_FILEPATH+'.pydict.pkl', 'rb'))
+
+    wnl = WordNetLemmatizer()
 
     # initialize DB
     cs = CandidateStore(10)
