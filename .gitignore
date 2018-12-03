@@ -9,4 +9,9 @@ app/__pycache__/
 app/static/node_modules/
 app/static/m_reader.mdl
 
+
+app/static/net.pt
+app/static/glove.6B.50d.txt.pydict.pkl
+
 venv/
+

@@ -33,18 +33,31 @@
         is a duplicate of a question that has already been asked, we fetch the answer from the cache and do not 
         need to query the neural network again.
         <br>
-        <img src="static/images/gru_diagram.png" alt="GRU diagram" style="float: left; width:250px; margin: 10px 40px 10px 10px">
+        <img src="static/images/gru_diagram.png" alt="GRU diagram" style="float: left; width:300px; margin: 10px 40px 10px 10px">
+        <img src="static/images/constrained_diagram.png" alt="Constraints diagram" style="float: left; width:150px; margin: 10px 40px 10px 10px">
         <br>
         Traditionally duplicate question detection is done via a Siamese neural network, which uses two identical 
         neural networks with shared weights to compute the similarity and decide whether it has the potential to 
         be a duplicate. Though this approach has decent accuracy, it requires a neural network to encapsulate an 
         entire natural language question as a single finite-dimensional embedding, which is a daunting task.
-        <br>
-        <img src="static/images/constrained_diagram.png" alt="Constraints diagram" style="float: right; width:150px; margin: 10px 40px 10px 10px">
-        <br>
-        In an effort to develop a better way to go about detecting duplicate questions, I was inspired by the attention mechanism.
+        <br><br>
+        In an effort to look for a better way to detect duplicate questions, I was inspired by the attention
+        mechanism, and how it achieves much better performance than summarization with a single embedding by looking at 
+        the entire sentence at once. Thus I developed a duplicate questions framework based on a Sequential Least Squares 
+        Programming (SLSQP) solver.
+        <br><img src="static/images/optimization.png" alt="Optimization" style="float: right; width:600px; margin: 10px 10px 10px 10px"><br>
+        I couldn't use equality for SLSQP, had to bound the solution. Had to adapt entropy a tiny bit to return 0 for 0 inputs. Weights were 
+        constrained to be greater than 0 and less than 1. There are some interesting side effects of this approach as well, such that when there
+        is padding or an unknown word, the weights solved for are all 0, which intuitively means that these provide no information.
+        <br><br>
+        This model achieves 70% validation accuracy, with around 83% training accuracy, and does not outperform the Siamese network, but 
+        this is to be expected. There are two main flaws with this approach, though there are clear paths to resolve them.
+        <br><br>
+        Firstly, there is no recognition of different words (two questions sharing "the" is equivalent them sharing "eucalyptus"), 
+        and this could be mitigated by relying on tf-idf weighting or a similar mechanism to make rarer words in the corpus more "valuable". 
+        Secondly, there the constrained optimization method is rather inexpressive as it relies on very simple relationships such 
+        as weighted sums, and I feel like the use of a neural network in a similar context would have a lower bias.
         <br><br><br><br><br><br><br><br><br><br>
-
     </p>
 
 {% endblock %}

@@ -1,10 +1,75 @@
 from flask import Flask, flash, request, render_template
+import torch, pickle
+import torch.nn as nn
+import scipy.optimize
+import numpy as np
+import lstm_utils as u
+import lstm_constants as c
+
 
 from candidate_retrieval import CandidateStore
 from predictor import Predictor
 from multiprocessing import cpu_count
 
 from collections import OrderedDict
+
+class LstmNet(nn.Module):
+
+    def __init__(self):
+        super(LstmNet, self).__init__()
+        self.lstm = nn.LSTM(input_size = c.SENT_INCLUSION_MAX,
+                            hidden_size = 100,
+                            num_layers = 2)
+        self.fc1 = nn.Linear(100,50)
+        self.bn1 = nn.BatchNorm1d(50)
+        self.fc2 = nn.Linear(50,25)
+        self.bn2 = nn.BatchNorm1d(25)
+        self.fc3 = nn.Linear(25,2)
+    
+    def forward(self, x):
+        x, (_,_) = self.lstm(x)
+        x = x[-1]
+        x = nn.LeakyReLU()(self.bn1(self.fc1(x)))
+        x = nn.LeakyReLU()(self.bn2(self.fc2(x)))
+        x = nn.Softmax(dim=1)(self.fc3(x))
+        return x
+
+def get_matrix(str1, str2):
+    goal_str = str1; use_str = str2
+    goal_vecs = u.vector_list(word2vect, goal_str)
+    use_vecs = np.array(u.vector_list(word2vect, use_str))
+    matrix = np.zeros((c.SENT_INCLUSION_MAX,c.SENT_INCLUSION_MAX))
+
+    for g_idx in range(len(goal_vecs)):
+        goal_vec = goal_vecs[g_idx]
+        if (goal_vec == np.zeros((c.WORD_EMBED_DIM))).all():
+            matrix[g_idx] = np.zeros((c.SENT_INCLUSION_MAX))
+        else:
+            objective = lambda weights: u.custom_entropy(np.array(weights))
+            init_guess = [0.0001]*c.SENT_INCLUSION_MAX
+            cons_func1 = lambda weights: np.array(weights).dot(use_vecs)-goal_vec+0.001
+            cons_func2 = lambda weights: -np.array(weights).dot(use_vecs)+goal_vec+0.001
+            constraint1 = {'type':'ineq','fun':cons_func1}
+            constraint2 = {'type':'ineq','fun':cons_func2}
+            bound = scipy.optimize.Bounds(0.,1.)
+            res = scipy.optimize.minimize(objective, init_guess, 
+                                        method='SLSQP', 
+                                        constraints=[constraint1,constraint2],
+                                        bounds=bound)
+            matrix[g_idx] = np.nan_to_num(res.x)
+    return matrix
+
+
+def duplicate_in_cache(question):
+    for key in cache:
+        print('Solving equations...')
+        matrix = np.expand_dims(get_matrix(question, key), 0)
+        matrix = torch.tensor(matrix)
+        pred = int(lstm_model(matrix).max(1)[1])
+        if pred==1:
+            return True, cache[key]
+    return False, None
+
 
 app = Flask(__name__)
 
@@ -24,17 +89,22 @@ def predict():
         elif question in cache:
             answer = cache[question]
         else:
-            candidate_paragraphs = cs.retrieve(question)
-            candidate_answers = []
-            for context in candidate_paragraphs.values:
-                prediction = model.predict(context, question, None, 1)
-                candidate_answers.append(prediction[0])
+            is_dup_in, dup_ans = duplicate_in_cache(question)
+            if is_dup_in:
+                print('Detected non-identical duplicate! Returning answer...')
+                answer = dup_ans
+            else:
+                candidate_paragraphs = cs.retrieve(question)
+                candidate_answers = []
+                for context in candidate_paragraphs.values:
+                    prediction = model.predict(context, question, None, 1)
+                    candidate_answers.append(prediction[0])
 
-            candidate_answers.sort(key=lambda x: x[1], reverse=True)
-            answer = candidate_answers[0][0]
-            if len(cache) >= cache_capacity:
-                cache.popitem(last=False)
-            cache[question] = answer
+                candidate_answers.sort(key=lambda x: x[1], reverse=True)
+                answer = candidate_answers[0][0]
+                if len(cache) >= cache_capacity:
+                    cache.popitem(last=False)
+                cache[question] = answer
 
         return render_template('home.html', answer=answer)
 
@@ -85,6 +155,12 @@ if __name__ == '__main__':
         char_embedding_file=None,
         num_workers=cpu_count() // 2
     )
+
+    print('Loading LSTM...')
+    lstm_model = torch.load('app/static/net.pt',map_location=torch.device('cpu'))
+
+    print('Loading GloVe...')
+    word2vect = pickle.load(open(c.GLOVE_FILEPATH+'.pydict.pkl', 'rb'))
 
     # initialize DB
     cs = CandidateStore(10)
