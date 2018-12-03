@@ -27,9 +27,24 @@
     est laborum.</p>
     <br>
     <h4> Duplicate Question Caching </h4>
+    <br>
     <p> The duplicate question caching system is intended to speed up the answering process for questions that 
         have already been answered. The site caches recent questions so that when a question is asked again, if it
-        is a duplicate of a question that has already been asked, we do not need to run the neural network again.
+        is a duplicate of a question that has already been asked, we fetch the answer from the cache and do not 
+        need to query the neural network again.
+        <br>
+        <img src="static/images/gru_diagram.png" alt="GRU diagram" style="float: left; width:250px; margin: 10px 40px 10px 10px">
+        <br>
+        Traditionally duplicate question detection is done via a Siamese neural network, which uses two identical 
+        neural networks with shared weights to compute the similarity and decide whether it has the potential to 
+        be a duplicate. Though this approach has decent accuracy, it requires a neural network to encapsulate an 
+        entire natural language question as a single finite-dimensional embedding, which is a daunting task.
+        <br>
+        <img src="static/images/constrained_diagram.png" alt="Constraints diagram" style="float: right; width:150px; margin: 10px 40px 10px 10px">
+        <br>
+        In an effort to develop a better way to go about detecting duplicate questions, I was inspired by the attention mechanism.
+        <br><br><br><br><br><br><br><br><br><br>
+
     </p>
 
 {% endblock %}
