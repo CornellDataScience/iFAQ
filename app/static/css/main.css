@@ -9,11 +9,17 @@
 html,body {
 	height: 100%;
   font-family: sans-serif;
+  overflow: auto;
 }
 
-#i-want-margin{
-  margin-left:20px;
-  margin-right:20px
+.i-want-margin{
+  margin-left:25px;
+  margin-right:25px;
+}
+
+.button-consistency{
+  padding-right: 7px;
+  padding-left: 7px;
 }
 
 /* ------------------------------------ */
