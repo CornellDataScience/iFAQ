@@ -12,33 +12,50 @@
 <!--===============================================================================================-->
 </head>
 
-    <h4><br> Candidate Retrieval </h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-        est laborum.</p>
-    <br>
+<style>
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
+
+    <h4 style="font-family:"Roboto", sans-serif;"><br> Candidate Retrieval </h4>
+    <p style="font-family:"Roboto", sans-serif;">Considering huge amount text needed to be searched while finding the answer,
+      we would like to first find possible paragraphs to narrow down the search area,
+      which is so called the candidate retrieval. The document uploaded is first segmented in different paragraphs.
+      Each paragraph would be encoded as bag of words. With the feature vectors representing paragraphs,
+      we do spectral clustering with a rbf kernel on them. The resulting clusters are different topics we would like to retrieve.
+    </p>
+
+    <img src="../static/images/spectral_clustering.png" width=30% class='center' >
+
+    <p style="font-family:"Roboto", sans-serif;">For the retrieval process where we are given a question, we measure the cosine similarity between the question and every paragraph.
+      Take the paragraph closest to the question and retrieve the whole cluster that paragraph belongs to. That cluster of paragraphs would be our candidates for answering questions.
+    </p>
+
     <h4> Extractive Question Answering </h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-    est laborum.</p>
-    <br>
+    <p>The model we are using is called Reinforced Mnemonic Reader (<a href="https://arxiv.org/abs/1705.02798">Hu et al. 2018</a>). The architecture of the model is shown below</p>
+    <img src="../static/images/m_reader.png" width=30% class='center' >
+    <p>The key idea of the model is basically attending the context, which is the candidate paragraphs after our retrieval, with the question user asked.
+    This attentive information is then combined with the context with a <a style="font-family:courier"> fusion </a> function to produce a question-attend context feature.
+    This is then self attended to capture long term dependencies among context words. After this whole process, a biLSTM is used and we can then answer the question based on the question attended context. </p>
+    <img src="../static/images/attention_mech.png" width=30% class='center' >
+
     <h4> Duplicate Question Caching </h4>
     <br>
-    <p> The duplicate question caching system is intended to speed up the answering process for questions that 
+    <p> The duplicate question caching system is intended to speed up the answering process for questions that
         have already been answered. The site caches recent questions so that when a question is asked again, if it
-        is a duplicate of a question that has already been asked, we fetch the answer from the cache and do not 
+        is a duplicate of a question that has already been asked, we fetch the answer from the cache and do not
         need to query the neural network again.
         <br>
         <img src="static/images/gru_diagram.png" alt="GRU diagram" style="float: left; width:300px; margin: 10px 40px 10px 10px">
         <img src="static/images/constrained_diagram.png" alt="Constraints diagram" style="float: left; width:150px; margin: 10px 40px 10px 10px">
         <br>
-        Traditionally duplicate question detection is done via a Siamese neural network, which uses two identical 
-        neural networks with shared weights to compute the similarity and decide whether it has the potential to 
-        be a duplicate. Though this approach has decent accuracy, it requires a neural network to encapsulate an 
+        Traditionally duplicate question detection is done via a Siamese neural network, which uses two identical
+        neural networks with shared weights to compute the similarity and decide whether it has the potential to
+        be a duplicate. Though this approach has decent accuracy, it requires a neural network to encapsulate an
         entire natural language question as a single finite-dimensional embedding, which is a daunting task.
         <br><br>
         In an effort to look for a better way to detect duplicate questions, I was inspired by the attention
@@ -60,4 +77,12 @@
         <br><br><br><br><br><br><br><br><br><br>
     </p>
 
+    <h4> Reference </h4>
+    <p>
+      <a href="https://arxiv.org/abs/1705.02798">
+        <i>
+          Minghao Hu et.al Reinforced Mnemonic Reader for Machine Reading Comprehension. International Joint Conference on Artificial Intelligence (IJCAI), 2018
+        </i>
+      </a>
+    </p>
 {% endblock %}

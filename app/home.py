@@ -97,6 +97,7 @@ def predict():
                 candidate_paragraphs = cs.retrieve(question)
                 candidate_answers = []
                 for context in candidate_paragraphs.values:
+                    print(context)
                     prediction = model.predict(context, question, None, 1)
                     candidate_answers.append(prediction[0])
 
@@ -106,7 +107,7 @@ def predict():
                     cache.popitem(last=False)
                 cache[question] = answer
 
-        return render_template('home.html', answer=answer)
+        return render_template('home.html', question=question, answer=answer)
 
 
 @app.route('/documents')
@@ -117,7 +118,6 @@ def documents():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        print(request)
         if 'file' not in request.files:
             return render_template('documents.html', files=cs.file_info)
 
@@ -164,7 +164,7 @@ if __name__ == '__main__':
 
     # initialize DB
     cs = CandidateStore(10)
-    cs.add_doc('app/static/on_method.txt')
+    cs.add_doc('God.txt')
     cs.make_clusters()
 
     # initialize cache
