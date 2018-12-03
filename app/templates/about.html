@@ -31,7 +31,7 @@
 
     <img src="../static/images/spectral_clustering.png" width=30% class='center' >
 
-    <p style="font-family:"Roboto", sans-serif;">For the retrieval process where we are given a question, we measure the L2 distance between the question and every paragraph.
+    <p style="font-family:"Roboto", sans-serif;">For the retrieval process where we are given a question, we measure the cosine similarity between the question and every paragraph.
       Take the paragraph closest to the question and retrieve the whole cluster that paragraph belongs to. That cluster of paragraphs would be our candidates for answering questions.
     </p>
 
@@ -40,7 +40,7 @@
     <img src="../static/images/m_reader.png" width=30% class='center' >
     <p>The key idea of the model is basically attending the context, which is the candidate paragraphs after our retrieval, with the question user asked.
     This attentive information is then combined with the context with a <a style="font-family:courier"> fusion </a> function to produce a question-attend context feature.
-    This is then self attended to capture long term dependenciesamong context words. </p>
+    This is then self attended to capture long term dependencies among context words. After this whole process, a biLSTM is used and we can then answer the question based on the question attended context. </p>
     <img src="../static/images/attention_mech.png" width=30% class='center' >
 
     <h4> Duplicate Question Caching </h4>
