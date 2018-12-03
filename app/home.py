@@ -7,15 +7,11 @@ import lstm_utils as u
 import lstm_constants as c
 import re
 from nltk.stem.wordnet import WordNetLemmatizer
-# also run nltk.download('wordnet')
-# How can I find God? -> How do I find God?
-
-
 from candidate_retrieval import CandidateStore
 from predictor import Predictor
 from multiprocessing import cpu_count
-
 from collections import OrderedDict
+
 
 class LstmNet(nn.Module):
 
@@ -38,12 +34,14 @@ class LstmNet(nn.Module):
         x = nn.Softmax(dim=1)(self.fc3(x))
         return x
 
+
 def lemmatizer(word):
     """Returns: lemmatized word if word >= length 5
     """
     if len(word)<4:
         return word
     return wnl.lemmatize(wnl.lemmatize(word, "n"), "v")
+
 
 def clean_string(string): # From kaggle-quora-dup submission
     """Returns: cleaned string, with common token replacements and lemmatization
@@ -60,6 +58,7 @@ def clean_string(string): # From kaggle-quora-dup submission
     string = re.sub(r"([0-9]+)000", r"\1k", string)
     string = ' '.join([lemmatizer(w) for w in string.split()])
     return string
+
 
 def get_matrix(str1, str2):
     goal_str = str1; use_str = str2
@@ -80,9 +79,9 @@ def get_matrix(str1, str2):
             constraint2 = {'type':'ineq','fun':cons_func2}
             bound = scipy.optimize.Bounds(0.,1.)
             res = scipy.optimize.minimize(objective, init_guess, 
-                                        method='SLSQP', 
-                                        constraints=[constraint1,constraint2],
-                                        bounds=bound)
+                                          method='SLSQP',
+                                          constraints=[constraint1,constraint2],
+                                          bounds=bound)
             matrix[g_idx] = np.nan_to_num(res.x)
     return matrix
 
@@ -108,6 +107,12 @@ app = Flask(__name__)
 @app.route('/home')
 def home():
     return render_template('home.html')
+
+
+@app.route('/clear')
+def clear():
+    cache.clear()
+    return render_template('home.html', question="", answer="")
 
 
 @app.route('/predict', methods=['POST'])
